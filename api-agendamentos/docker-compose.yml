@@ -17,7 +17,7 @@ services:
     stdin_open: true
     tty: true
     command: >
-      sh -c "npx prisma generate && node index.js"
+      sh -c "npm install && npx prisma generate && node index.js"
 
   redis:
     image: redis:latest

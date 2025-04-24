@@ -17,7 +17,7 @@ services:
     stdin_open: true
     tty: true
     command: >
-      sh -c "node index.js"
+      sh -c "npm install && node index.js"
 
   redis:
     image: redis:latest
