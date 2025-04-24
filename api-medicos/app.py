@@ -15,9 +15,14 @@ class Medico(BaseModel):
     nome: str
     especialidade: str
 
-medicos = []
+medicos = [
+    Medico(id=1, nome="Dr. João", especialidade="Cardiologia"),
+    Medico(id=2, nome="Dra. Maria", especialidade="Pediatria"),
+    Medico(id=3, nome="Dr. Pedro", especialidade="Ortopedia"),
+    Medico(id=4, nome="Dra. Ana", especialidade="Dermatologia"),
+    Medico(id=5, nome="Dr. Carlos", especialidade="Neurologia"),
+]
 
-# Conexão com Redis
 redis_client = redis.Redis(
     host=os.getenv("REDIS_HOST"),
     port=os.getenv("REDIS_PORT"),
