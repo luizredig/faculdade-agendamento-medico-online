@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  api-usuarios:
+    image: node:latest
+    container_name: api-usuarios
+    restart: always
+    working_dir: /api-usuarios
+    volumes:
+      - /home/redig/github/redig/faculdade-agendamento-medico-online/api-usuarios:/api-usuarios
+    ports:
+      - "3002:3002"
+    depends_on:
+      - redis
+    networks:
+      - agendamentos_network
+    stdin_open: true
+    tty: true
+    command: >
+      sh -c "node index.js"
+
+  redis:
+    image: redis:latest
+    container_name: redis-usuarios
+    restart: always
+    ports:
+      - "6381:6379"
+    volumes:
+      - redis_data:/data
+    command: ["redis-server", "--appendonly", "yes"]
+    networks:
+      - agendamentos_network
+
+volumes:
+  redis_data:
+
+networks:
+  agendamentos_network:
+    external: true

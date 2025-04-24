@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  api-medicos:
+    image: python:3.9
+    container_name: api-medicos
+    restart: always
+    working_dir: /api-medicos
+    volumes:
+      - /home/redig/github/redig/faculdade-agendamento-medico-online/api-medicos:/api-medicos
+    ports:
+      - "3001:3001"
+    command: >
+      sh -c "pip install -r requirements.txt && python app.py"
+    depends_on:
+      - redis
+    networks:
+      - agendamentos_network
+
+  redis:
+    image: redis:latest
+    container_name: redis-medicos
+    restart: always
+    ports:
+      - "6380:6379"
+    volumes:
+      - redis_data:/data
+    command: ["redis-server", "--appendonly", "yes"]
+    networks:
+      - agendamentos_network
+
+volumes:
+  redis_data:
+
+networks:
+  agendamentos_network:
+    external: true
