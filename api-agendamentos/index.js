@@ -1,5 +1,10 @@
 const express = require("express");
 const prisma = require("./prisma/client");
+const hospitais = require("./hospitais");
+const axios = require("axios");
+
+const API_MEDICOS_URL = process.env.API_MEDICOS_URL;
+const API_USUARIOS_URL = process.env.API_USUARIOS_URL;
 
 require("dotenv").config();
 
@@ -35,6 +40,37 @@ app.get(
     }
   }
 );
+
+app.post("/agendamentos", async (req, res) => {
+  const idMedico = Math.floor(Math.random() * 5) + 1;
+  const idUsuario = Math.floor(Math.random() * 5) + 1;
+  const hospital = hospitais[Math.floor(Math.random() * hospitais.length)];
+
+  try {
+    const medicoResponse = await axios.get(
+      `${API_MEDICOS_URL}/medicos/${idMedico}`
+    );
+    const medico = medicoResponse.data;
+
+    const usuarioResponse = await axios.get(
+      `${API_USUARIOS_URL}/usuarios/${idUsuario}`
+    );
+    const usuario = usuarioResponse.data;
+
+    const novoAgendamento = await prisma.agendamento.create({
+      data: {
+        idUsuario: usuario.id,
+        idMedico: medico.id,
+        local: hospital.nome,
+      },
+    });
+
+    res.status(201).json(novoAgendamento);
+  } catch (error) {
+    console.error("Erro ao criar agendamento:", error.message);
+    res.status(500).json({ error: "Erro ao criar agendamento." });
+  }
+});
 
 app.listen(process.env.PORT, () => {
   console.log(`API Agendamentos rodando na porta ${process.env.PORT}`);
