@@ -14,10 +14,11 @@ services:
       - redis
     networks:
       - agendamentos_network
+      - postgres16_postgres16_network
     stdin_open: true
     tty: true
     command: >
-      sh -c "npm install && npx prisma generate && node index.js"
+      sh -c "npm install && npx prisma generate && npx prisma migrate deploy && node index.js"
 
   redis:
     image: redis:latest
@@ -36,4 +37,6 @@ volumes:
 
 networks:
   agendamentos_network:
+    external: true
+  postgres16_postgres16_network:
     external: true
