@@ -1,12 +1,19 @@
 require("dotenv").config();
 const express = require("express");
-const app = express();
+const cacheMiddleware = require("./cache");
 
+const app = express();
 app.use(express.json());
 
-const usuarios = [];
+const usuarios = [
+  { nome: "Lucas", idade: 25, id: 1 },
+  { nome: "Ana", idade: 30, id: 2 },
+  { nome: "Carlos", idade: 28, id: 3 },
+  { nome: "Maria", idade: 22, id: 4 },
+  { nome: "João", idade: 35, id: 5 },
+];
 
-app.get("/usuarios", (req, res) => {
+app.get("/usuarios", cacheMiddleware("usuarios"), (req, res) => {
   res.json(usuarios);
 });
 
