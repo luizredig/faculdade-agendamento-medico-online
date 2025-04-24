@@ -39,6 +39,21 @@ def listar_medicos():
     redis_client.setex(cache_key, 60, json.dumps([medico.dict() for medico in medicos]))
     return medicos
 
+@app.get("/medicos/{id}")
+def get_medico_por_id(id: int):
+    cache_key = f"medicos:{id}"
+
+    if redis_client.exists(cache_key):
+        return json.loads(redis_client.get(cache_key))
+
+    medico = next((m for m in medicos if m.id == id), None)
+    if not medico:
+        raise HTTPException(status_code=404, detail="Médico não encontrado")
+
+    redis_client.setex(cache_key, 60, json.dumps(medico.dict()))
+    return medico
+
+
 @app.post("/medicos")
 def cadastrar_medico(medico: Medico):
     medicos.append(medico)
